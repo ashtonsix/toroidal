@@ -1,0 +1,28 @@
+{
+  "name": "toroidal",
+  "version": "0.0.1",
+  "description": "Helpers for working w/ 2d toroidal arrays",
+  "main": "dist/index.js",
+  "scripts": {
+    "clean": "rimraf dist",
+    "build:src": "babel src -d dist",
+    "build": "npm run clean && npm run build:src",
+    "lint": "eslint src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Demi-IO/toroidal.git"
+  },
+  "keywords": [
+    "toroidal",
+    "matrix",
+    "wrap",
+    "wrap around"
+  ],
+  "author": "Ashton War <me@ashtonwar.com> (http://github.com/Demi-IO)",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Demi-IO/toroidal/issues"
+  },
+  "homepage": "https://github.com/Demi-IO/toroidal"
+}
