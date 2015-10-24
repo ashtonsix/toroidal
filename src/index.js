@@ -31,52 +31,60 @@ const splice = (arr, replaceFrom, newArr) => {
   );
 };
 
+const unwrap = v => v._torrodial ? v.value() : v;
+
+const chainable = (wrapper, data, f) => function chained() {
+  return wrapper(f.bind(null, data).apply(null, arguments));
+};
+
+export const subset = (d, x, y, width, height) => {
+  const data = unwrap(d);
+
+  return slice(data, y, y + height).map(
+    row => slice(row, x, x + width)
+  );
+};
+
+export const insert = (d, x, y, nd) => {
+  const newData = unwrap(nd);
+  const data = unwrap(d);
+
+  if (newData.length > data.length) {
+    console.error('Cannot insert data: will not fit');
+    return null;
+  }
+
+  return splice(data, y, slice(data, y, y + newData.length).map(
+    (row, yi) => splice(row, x, newData[yi])
+  ));
+};
+
+export const map = (d, f) => {
+  const data = unwrap(d);
+  return data.map((row, y) => row.map((value, x) => f(value, x, y)));
+};
+
+export const reduce = (d, f, initialValue) => {
+  const data = unwrap(d);
+  function step(pv, x, y) {
+    if (y >= data.length) return pv;
+    const newX = (x + 1) % data[0].length;
+    const newY = newX < x ? y + 1 : y;
+    return step(f(pv, data[y][x], x, y, data), newX, newY);
+  }
+
+  return step(initialValue, 0, 0);
+};
+
 export default function torodial(data) {
   return {
     _torrodial: true,
 
-    value() {
-      return data;
-    },
+    value() { return data; },
 
-    subset(x, y, width, height) {
-      return torodial(
-        slice(data, y, y + height).map(
-          row => slice(row, x, x + width)
-        )
-      );
-    },
-
-    insert(x, y, nd) {
-      const newData = nd._torrodial ? nd.value() : nd;
-
-      if (newData.length > data.length) {
-        console.error('Cannot insert data: will not fit');
-        return null;
-      }
-
-      return torodial(
-        splice(data, y, slice(data, y, y + newData.length).map(
-          (row, yi) => splice(row, x, newData[yi])
-        ))
-      );
-    },
-
-    map(f) {
-      return torodial(
-        data.map((row, y) => row.map((value, x) => f(value, x, y)))
-      );
-    },
-
-    reduce(f, initialValue) {
-      function reduce(pv, x, y) {
-        if (y >= data.length) return pv;
-        const newX = (x + 1) % data[0].length;
-        const newY = newX < x ? y + 1 : y;
-        return reduce(f(pv, data[y][x], x, y, data), newX, newY);
-      }
-
-      return reduce(initialValue, 0, 0);
-    },
+    subset: chainable(torodial, data, subset),
+    insert: chainable(torodial, data, insert),
+    reduce: reduce.bind(null, data),
+    map: chainable(torodial, data, map),
   };
 }
