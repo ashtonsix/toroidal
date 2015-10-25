@@ -76,6 +76,12 @@ export const reduce = (d, f, initialValue) => {
   return step(initialValue, 0, 0);
 };
 
+export const zeroes = (width, height) => (
+  Array.apply(null, Array(height)).map(() => (
+    Array.apply(null, Array(width)).map(() => 0)
+  ))
+);
+
 export default function torodial(data) {
   return {
     _torrodial: true,
@@ -88,3 +94,10 @@ export default function torodial(data) {
     map: chainable(torodial, data, map),
   };
 }
+
+torodial.subset = subset;
+torodial.insert = insert;
+torodial.reduce = reduce;
+torodial.map = map;
+
+torodial.zeroes = zeroes;
