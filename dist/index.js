@@ -64,7 +64,7 @@ var map = function map(d, f) {
   var data = unwrap(d);
   return data.map(function (row, y) {
     return row.map(function (value, x) {
-      return f(value, x, y);
+      return f(value, x, y, data);
     });
   });
 };
