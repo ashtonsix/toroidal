@@ -97,7 +97,7 @@ var reduce = function reduce(d, f, initialValue) {
 };
 
 exports.reduce = reduce;
-var zeroes = function zeroes(width, height) {
+var _zeroes = function _zeroes(width, height) {
   return Array.apply(null, Array(height)).map(function () {
     return Array.apply(null, Array(width)).map(function () {
       return 0;
@@ -105,7 +105,7 @@ var zeroes = function zeroes(width, height) {
   });
 };
 
-exports.zeroes = zeroes;
+exports.zeroes = _zeroes;
 
 function torodial(data) {
   return {
@@ -118,7 +118,11 @@ function torodial(data) {
     subset: chainable(torodial, data, subset),
     insert: chainable(torodial, data, insert),
     reduce: reduce.bind(null, data),
-    map: chainable(torodial, data, map) };
+    map: chainable(torodial, data, map),
+
+    zeroes: function zeroes() {
+      return torodial(_zeroes.apply(null, arguments));
+    } };
 }
 
 torodial.subset = subset;
@@ -126,4 +130,4 @@ torodial.insert = insert;
 torodial.reduce = reduce;
 torodial.map = map;
 
-torodial.zeroes = zeroes;
+torodial.zeroes = _zeroes;
