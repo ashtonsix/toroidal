@@ -65,7 +65,7 @@ torodial.zeroes(3, 2) // [[0, 0, 0],
 
 Chaining
 --------
-`subset`, `insert`, `map` & `reduce` are chainable:
+All functions are chainable:
 
 ```js
 torodial([

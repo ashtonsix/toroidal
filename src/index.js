@@ -92,6 +92,8 @@ export default function torodial(data) {
     insert: chainable(torodial, data, insert),
     reduce: reduce.bind(null, data),
     map: chainable(torodial, data, map),
+
+    zeroes() { return torodial(zeroes.apply(null, arguments)); },
   };
 }
 
