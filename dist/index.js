@@ -30,9 +30,9 @@ var unwrap = function unwrap(v) {
   return v._torrodial ? v.value() : v;
 };
 
-var chainable = function chainable(wrapper, data, f) {
+var chainable = function chainable(container, data, f) {
   return function chained() {
-    return wrapper(f.bind(null, data).apply(null, arguments));
+    return container(f.bind(null, data).apply(null, arguments));
   };
 };
 
@@ -72,22 +72,22 @@ var map = function map(d, f) {
 exports.map = map;
 var reduce = function reduce(d, f, initialValue) {
   var data = unwrap(d);
-  function step(_x, _x2, _x3) {
+  function step(_x2, _x3, _x4) {
     var _again = true;
 
     _function: while (_again) {
-      var pv = _x,
-          x = _x2,
-          y = _x3;
+      var pv = _x2,
+          x = _x3,
+          y = _x4;
       newX = newY = undefined;
       _again = false;
 
       if (y >= data.length) return pv;
       var newX = (x + 1) % data[0].length;
       var newY = newX < x ? y + 1 : y;
-      _x = f(pv, data[y][x], x, y, data);
-      _x2 = newX;
-      _x3 = newY;
+      _x2 = f(pv, data[y][x], x, y, data);
+      _x3 = newX;
+      _x4 = newY;
       _again = true;
       continue _function;
     }
@@ -98,9 +98,18 @@ var reduce = function reduce(d, f, initialValue) {
 
 exports.reduce = reduce;
 var _zeroes = function _zeroes(width, height) {
-  return Array.apply(null, Array(height)).map(function () {
+  var f = arguments[2] === undefined ? function () {
+    return 0;
+  } : arguments[2];
+
+  var data = Array.apply(null, Array(height)).map(function () {
     return Array.apply(null, Array(width)).map(function () {
       return 0;
+    });
+  });
+  return data.map(function (row, y) {
+    return row.map(function (_, x) {
+      return f(x, y);
     });
   });
 };
