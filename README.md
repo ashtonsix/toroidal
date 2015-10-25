@@ -31,7 +31,7 @@ toroidal.insert([
 
 ##### `map :: (data, f) => newData`
 
-`f :: (value, x, y) => newValue`
+`f :: (value, x, y, data) => newValue`
 
 ```js
 toroidal.map([

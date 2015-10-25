@@ -61,7 +61,7 @@ export const insert = (d, x, y, nd) => {
 
 export const map = (d, f) => {
   const data = unwrap(d);
-  return data.map((row, y) => row.map((value, x) => f(value, x, y)));
+  return data.map((row, y) => row.map((value, x) => f(value, x, y, data)));
 };
 
 export const reduce = (d, f, initialValue) => {
