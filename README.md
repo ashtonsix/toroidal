@@ -2,6 +2,8 @@ toroidal
 ========
 Helpers for working w/ 2d toroidal (wrap-around) arrays.
 
+`npm i toroidal`
+
 API
 ---
 ##### `subset :: (data, x, y, width, height) => newData`

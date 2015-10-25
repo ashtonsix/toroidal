@@ -97,6 +97,15 @@ var reduce = function reduce(d, f, initialValue) {
 };
 
 exports.reduce = reduce;
+var zeroes = function zeroes(width, height) {
+  return Array.apply(null, Array(height)).map(function () {
+    return Array.apply(null, Array(width)).map(function () {
+      return 0;
+    });
+  });
+};
+
+exports.zeroes = zeroes;
 
 function torodial(data) {
   return {
@@ -111,3 +120,10 @@ function torodial(data) {
     reduce: reduce.bind(null, data),
     map: chainable(torodial, data, map) };
 }
+
+torodial.subset = subset;
+torodial.insert = insert;
+torodial.reduce = reduce;
+torodial.map = map;
+
+torodial.zeroes = zeroes;
