@@ -55,11 +55,16 @@ toroidal.map([
 ), 0) // 4
 ```
 
-##### `zeroes :: (width, height) => data`
+##### `zeroes :: (width, height, f) => data`
+
+`f :: (x, y) => value`
 
 ```js
 torodial.zeroes(3, 2) // [[0, 0, 0],
                       //  [0, 0, 0]]
+
+torodial.zeroes(3, 2, () => 1) // [[1, 1, 1],
+                               //  [1, 1, 1]]
 
 ```
 

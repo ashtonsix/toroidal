@@ -33,8 +33,8 @@ const splice = (arr, replaceFrom, newArr) => {
 
 const unwrap = v => v._torrodial ? v.value() : v;
 
-const chainable = (wrapper, data, f) => function chained() {
-  return wrapper(f.bind(null, data).apply(null, arguments));
+const chainable = (container, data, f) => function chained() {
+  return container(f.bind(null, data).apply(null, arguments));
 };
 
 export const subset = (d, x, y, width, height) => {
@@ -76,11 +76,12 @@ export const reduce = (d, f, initialValue) => {
   return step(initialValue, 0, 0);
 };
 
-export const zeroes = (width, height) => (
-  Array.apply(null, Array(height)).map(() => (
+export const zeroes = (width, height, f = () => 0) => {
+  const data = Array.apply(null, Array(height)).map(() => (
     Array.apply(null, Array(width)).map(() => 0)
-  ))
-);
+  ));
+  return data.map((row, y) => row.map((_, x) => f(x, y)));
+};
 
 export default function torodial(data) {
   return {
