@@ -86,3 +86,19 @@ torodial([
 Data is passed in automaticaly for chained functions.
 
 You can pass either raw or wrapped data for standalone functions.
+
+Game of Life
+------------
+Conway's game of life can be implemented trivially w/ `toroidal`:
+
+```js
+const gameOfLife = previousState => (
+  toroidal(previousState).map((alive, x, y) => {
+    const neighbours = toroidal(previousState)
+      .subset(x - 1, y - 1, 3, 3)
+      .reduce((pv, v) => pv + v, 0)
+      - alive;
+    return ((alive && neighbours === 2) || neighbours === 3) ? 1 : 0;
+  }).value()
+);
+```
