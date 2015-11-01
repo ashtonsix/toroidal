@@ -113,3 +113,5 @@ const automata = ruleset => {
 const gameOfLife = automata('23/3');
 const briansBrain = automata('/2/3');
 ```
+
+More info about [generations](http://psoup.math.wisc.edu/mcell/rullex_gene.html) & [life](http://psoup.math.wisc.edu/mcell/rullex_life.html).
