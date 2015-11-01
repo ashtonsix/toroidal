@@ -1,6 +1,6 @@
 {
   "name": "toroidal",
-  "version": "0.0.8",
+  "version": "0.1.0",
   "description": "Helpers for working w/ 2d toroidal arrays",
   "main": "dist/index.js",
   "scripts": {
