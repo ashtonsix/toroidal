@@ -87,18 +87,29 @@ Data is passed in automaticaly for chained functions.
 
 You can pass either raw or wrapped data for standalone functions.
 
-Game of Life
-------------
-Conway's game of life can be implemented trivially w/ `toroidal`:
+Cellular Automata
+-----------------
+Any life or generations automata can be implemented trivially w/ `toroidal`:
 
 ```js
-const gameOfLife = previousState => (
-  toroidal(previousState).map((alive, x, y) => {
-    const neighbours = toroidal(previousState)
-      .subset(x - 1, y - 1, 3, 3)
-      .reduce((pv, v) => pv + v, 0)
-      - alive;
-    return ((alive && neighbours === 2) || neighbours === 3) ? 1 : 0;
-  }).value()
-);
+const ok = (str, v) => str.indexOf(v) !== -1;
+
+const automata = ruleset => {
+  const [stayAlive, born, numStates = 2] = ruleset.split('/');
+  return previousState => (
+    toroidal(previousState).map((state, x, y) =>
+      state >= 1 && numStates > 2 ? (state + 1) % numStates :
+      ok(
+        state === 1 ? stayAlive : born,
+        toroidal(previousState)
+          .subset(x - 1, y - 1, 3, 3)
+          .reduce((pv, v) => pv + (v === 1 ? 1 : 0), 0)
+          - (state === 1 ? 1 : 0)
+      ) ? 1 : 0
+    ).value()
+  );
+};
+
+const gameOfLife = automata('23/3');
+const briansBrain = automata('/2/3');
 ```
