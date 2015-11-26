@@ -1,126 +1,76 @@
-'use strict';
+const concat = [].concat.bind([]);
+const mod = (value, divisor) => (value % divisor + divisor) % divisor;
 
-Object.defineProperty(exports, '__esModule', {
-  value: true
-});
-exports['default'] = torodial;
-var concat = [].concat.bind([]);
-var mod = function mod(value, divisor) {
-  return (value % divisor + divisor) % divisor;
-};
-
-var slice = function slice(arr, s, e) {
-  var start = mod(s, arr.length);
-  var end = mod(e, arr.length);
+const slice = (arr, s, e) => {
+  const start = mod(s, arr.length);
+  const end = mod(e, arr.length);
   return start < end ? arr.slice(start, end) : concat(arr.slice(start), arr.slice(0, end));
 };
 
-var splice = function splice(arr, replaceFrom, newArr) {
+const splice = (arr, replaceFrom, newArr) => {
   if (newArr.length > arr.length) {
     console.error('Cannot insert data: will not fit');
     return null;
   }
 
-  var start = mod(replaceFrom, arr.length);
-  var end = mod(replaceFrom + newArr.length, arr.length);
+  const start = mod(replaceFrom, arr.length);
+  const end = mod(replaceFrom + newArr.length, arr.length);
   return start < end ? concat(arr.slice(0, start), newArr, arr.slice(end)) : concat(newArr.slice(arr.length - start), arr.slice(end, start), newArr.slice(0, arr.length - start));
 };
 
-var unwrap = function unwrap(v) {
-  return v._torrodial ? v.value() : v;
+const unwrap = v => v._torrodial ? v.value() : v;
+
+const chainable = (container, data, f) => function chained() {
+  return container(f.bind(null, data).apply(null, arguments));
 };
 
-var chainable = function chainable(container, data, f) {
-  return function chained() {
-    return container(f.bind(null, data).apply(null, arguments));
-  };
+export const subset = (d, x, y, width, height) => {
+  const data = unwrap(d);
+
+  return slice(data, y, y + height).map(row => slice(row, x, x + width));
 };
 
-var subset = function subset(d, x, y, width, height) {
-  var data = unwrap(d);
-
-  return slice(data, y, y + height).map(function (row) {
-    return slice(row, x, x + width);
-  });
-};
-
-exports.subset = subset;
-var insert = function insert(d, x, y, nd) {
-  var newData = unwrap(nd);
-  var data = unwrap(d);
+export const insert = (d, x, y, nd, f) => {
+  let newData = unwrap(nd);
+  const data = unwrap(d);
 
   if (newData.length > data.length) {
     console.error('Cannot insert data: will not fit');
     return null;
   }
 
-  return splice(data, y, slice(data, y, y + newData.length).map(function (row, yi) {
-    return splice(row, x, newData[yi]);
-  }));
+  newData = newData.map((row, yi) => row.map((nv, xi) => f(nv, data[yi][xi], xi, yi, data)));
+
+  return splice(data, y, slice(data, y, y + newData.length).map((row, yi) => splice(row, x, newData[yi])));
 };
 
-exports.insert = insert;
-var map = function map(d, f) {
-  var data = unwrap(d);
-  return data.map(function (row, y) {
-    return row.map(function (value, x) {
-      return f(value, x, y, data);
-    });
-  });
+export const map = (d, f) => {
+  const data = unwrap(d);
+  return data.map((row, y) => row.map((value, x) => f(value, x, y, data)));
 };
 
-exports.map = map;
-var reduce = function reduce(d, f, initialValue) {
-  var data = unwrap(d);
-  function step(_x2, _x3, _x4) {
-    var _again = true;
-
-    _function: while (_again) {
-      var pv = _x2,
-          x = _x3,
-          y = _x4;
-      newX = newY = undefined;
-      _again = false;
-
-      if (y >= data.length) return pv;
-      var newX = (x + 1) % data[0].length;
-      var newY = newX < x ? y + 1 : y;
-      _x2 = f(pv, data[y][x], x, y, data);
-      _x3 = newX;
-      _x4 = newY;
-      _again = true;
-      continue _function;
-    }
+export const reduce = (d, f, initialValue) => {
+  const data = unwrap(d);
+  function step(pv, x, y) {
+    if (y >= data.length) return pv;
+    const newX = (x + 1) % data[0].length;
+    const newY = newX < x ? y + 1 : y;
+    return step(f(pv, data[y][x], x, y, data), newX, newY);
   }
 
   return step(initialValue, 0, 0);
 };
 
-exports.reduce = reduce;
-var _zeroes = function _zeroes(width, height) {
-  var f = arguments[2] === undefined ? function () {
-    return 0;
-  } : arguments[2];
-
-  var data = Array.apply(null, Array(height)).map(function () {
-    return Array.apply(null, Array(width)).map(function () {
-      return 0;
-    });
-  });
-  return data.map(function (row, y) {
-    return row.map(function (_, x) {
-      return f(x, y);
-    });
-  });
+export const zeroes = (width, height, f = () => 0) => {
+  const data = Array.apply(null, Array(height)).map(() => Array.apply(null, Array(width)).map(() => 0));
+  return data.map((row, y) => row.map((_, x) => f(x, y)));
 };
 
-exports.zeroes = _zeroes;
-
-function torodial(data) {
+export default function torodial(data) {
   return {
     _torrodial: true,
 
-    value: function value() {
+    value() {
       return data;
     },
 
@@ -129,9 +79,10 @@ function torodial(data) {
     reduce: reduce.bind(null, data),
     map: chainable(torodial, data, map),
 
-    zeroes: function zeroes() {
-      return torodial(_zeroes.apply(null, arguments));
-    } };
+    zeroes() {
+      return torodial(zeroes.apply(null, arguments));
+    }
+  };
 }
 
 torodial.subset = subset;
@@ -139,4 +90,4 @@ torodial.insert = insert;
 torodial.reduce = reduce;
 torodial.map = map;
 
-torodial.zeroes = _zeroes;
+torodial.zeroes = zeroes;

@@ -45,14 +45,16 @@ export const subset = (d, x, y, width, height) => {
   );
 };
 
-export const insert = (d, x, y, nd) => {
-  const newData = unwrap(nd);
+export const insert = (d, x, y, nd, f) => {
+  let newData = unwrap(nd);
   const data = unwrap(d);
 
   if (newData.length > data.length) {
     console.error('Cannot insert data: will not fit');
     return null;
   }
+
+  newData = newData.map((row, yi) => row.map((nv, xi) => f(nv, data[yi][xi], xi, yi, data)));
 
   return splice(data, y, slice(data, y, y + newData.length).map(
     (row, yi) => splice(row, x, newData[yi])
