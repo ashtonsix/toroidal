@@ -16,7 +16,9 @@ toroidal.subset([
 ], 0, 0, 2, 2)
 ```
 
-##### `insert :: (data, x, y, newData) => newData`
+##### `insert :: (data, x, y, newData, f) => newData`
+
+`f :: (newValue, value, x, y, data) => newValue`
 
 ```js
 toroidal.insert([
