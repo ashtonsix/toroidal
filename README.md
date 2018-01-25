@@ -22,9 +22,9 @@ toroidal.subset([
 
 ```js
 toroidal.insert([
-  [10, 11, 12], // [[40, 50, 22],
-  [20, 21, 22], //  [60, 70, 32],
-  [30, 31, 32], //  [40, 41, 42]]
+  [10, 11, 12], // [[40, 50, 12],
+  [20, 21, 22], //  [60, 70, 22],
+  [30, 31, 32], //  [30, 31, 32]]
 ], 0, 0, [
   [40, 50],
   [60, 70]
@@ -48,7 +48,7 @@ toroidal.map([
 `f :: (previousValue, value, x, y, data) => newValue`
 
 ```js
-toroidal.map([
+toroidal.reduce([
   [10, 11, 12],
   [20, 21, 22],
   [30, 31, 32],
@@ -62,10 +62,10 @@ toroidal.map([
 `f :: (x, y) => value`
 
 ```js
-torodial.zeroes(3, 2) // [[0, 0, 0],
+toroidal.zeroes(3, 2) // [[0, 0, 0],
                       //  [0, 0, 0]]
 
-torodial.zeroes(3, 2, () => 1) // [[1, 1, 1],
+toroidal.zeroes(3, 2, () => 1) // [[1, 1, 1],
                                //  [1, 1, 1]]
 
 ```
