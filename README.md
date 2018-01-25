@@ -75,7 +75,7 @@ Chaining
 All functions are chainable:
 
 ```js
-torodial([
+toroidal([
   [10, 11, 12],
   [20, 21, 22],
   [30, 31, 32],
