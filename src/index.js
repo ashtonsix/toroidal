@@ -45,7 +45,7 @@ export const subset = (d, x, y, width, height) => {
   );
 };
 
-export const insert = (d, x, y, nd, f) => {
+export const insert = (d, x, y, nd, f = x => x) => {
   let newData = unwrap(nd);
   const data = unwrap(d);
 
